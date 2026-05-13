@@ -979,7 +979,7 @@
 
     iget-object p1, p0, Lcom/ifengyu/intercom/ui/widget/dialog/y;->a:Lcom/ifengyu/intercom/ui/baseui/BaseActivity;
 
-    const-string v0, "wxef025e7faa0241ac"
+    const-string v0, "0"
 
     const/4 v1, 0x1
 
