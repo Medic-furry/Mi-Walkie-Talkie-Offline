@@ -802,7 +802,7 @@
 .method private z()V
     .locals 1
 
-    const-string v0, "wxef025e7faa0241ac"
+    const-string v0, "0"
 
     invoke-static {p0, v0}, Lcom/ifengyu/intercom/wxapi/WXEntryActivity;->a(Landroid/content/Context;Ljava/lang/String;)Lcom/tencent/mm/opensdk/openapi/IWXAPI;
 
