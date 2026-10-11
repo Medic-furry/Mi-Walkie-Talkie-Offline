@@ -618,8 +618,8 @@ public static int l() {
 ### 构建步骤
 
 ```bash
-# 1. 重新打包
-java -jar apktool.jar b V.01-BATE -o output-unsigned.apk
+# 1. 重新打包（apktool.jar 位于本目录 V.01-BATE/ 内）
+java -jar V.01-BATE/apktool.jar b V.01-BATE -o output-unsigned.apk
 
 # 2. 4字节对齐
 zipalign -p 4 output-unsigned.apk output-aligned.apk
@@ -643,8 +643,9 @@ apksigner verify --verbose MI-Walkie-Talkie-final.apk
 ```text
 项目目录/
 ├── README.md
-├── apktool.jar
 ├── V.01-BATE/
+│   ├── apktool.jar
+│   ├── apktool_version.txt
 │
 ├── smali/
 │   └── com/ifengyu/intercom/
