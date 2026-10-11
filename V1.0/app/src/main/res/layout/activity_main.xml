@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:titleTextAppearance="@style/ToolbarTitle" />
+
+        <!-- 频道设置 -->
+        <TextView
+            style="@style/SectionHeader"
+            android:text="@string/section_channel" />
+
+        <!-- 频道卡片（蓝色渐变，照原版）：双频显示两个信道，每信道 RX/TX 频率 -->
+        <LinearLayout
+            android:id="@+id/channelCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_channel_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 信道 1（点击单独进入该槽位的频率设置页，原版 extra_shark_is_major_channel=true） -->
+            <LinearLayout
+                android:id="@+id/ch1Area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ch1Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/ch1RxFreq"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/frequency_rx"
+                        android:textColor="@color/white_70"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ch1TxArea"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/ch1TxFreq"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/frequency_tx"
+                        android:textColor="@color/white_70"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+            </LinearLayout>
+
+            <!-- 信道 2（双频模式第二个信道，未收到数据前隐藏，点击进该槽位设置页） -->
+            <LinearLayout
+                android:id="@+id/ch2Area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/ch2Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ch2RxFreq"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/frequency_rx"
+                            android:textColor="@color/white_70"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ch2TxFreq"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/frequency_tx"
+                            android:textColor="@color/white_70"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 连接状态提示（未就绪时显示） -->
+            <TextView
+                android:id="@+id/protocolHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/waiting_freq_data"
+                android:textColor="@color/white_70"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- 对讲机设置 -->
+        <TextView
+            style="@style/SectionHeader"
+            android:text="@string/section_radio_setting" />
+
+        <!-- 对讲机名称 -->
+        <LinearLayout
+            android:id="@+id/nameSettingItem"
+            style="@style/RadioSettingItem">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/RadioSettingTitle"
+                    android:text="@string/setting_radio_name" />
+                <TextView
+                    style="@style/RadioSettingDesc"
+                    android:text="@string/setting_radio_name_desc" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/radioNameValue"
+                style="@style/RadioSettingValue"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <View style="@style/MainSettingDivider" />
+
+        <!-- 双频模式 -->
+        <LinearLayout
+            android:id="@+id/dualBandItem"
+            style="@style/RadioSettingItem">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/RadioSettingTitle"
+                    android:text="@string/setting_dual_band" />
+                <TextView
+                    style="@style/RadioSettingDesc"
+                    android:text="@string/setting_dual_band_desc" />
+            </LinearLayout>
+            <Switch
+                android:id="@+id/dualBandSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false" />
+        </LinearLayout>
+
+        <View style="@style/MainSettingDivider" />
+
+        <!-- 功率等级 -->
+        <LinearLayout
+            android:id="@+id/powerSettingItem"
+            style="@style/RadioSettingItem">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/RadioSettingTitle"
+                    android:text="@string/setting_power" />
+                <TextView
+                    style="@style/RadioSettingDesc"
+                    android:text="@string/setting_power_desc" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/powerValue"
+                style="@style/RadioSettingValue"
+                android:layout_marginStart="8dp"
+                android:text="@string/power_high_5w" />
+        </LinearLayout>
+
+        <View style="@style/MainSettingDivider" />
+
+        <!-- 时间校准 -->
+        <LinearLayout
+            android:id="@+id/timeSyncItem"
+            style="@style/RadioSettingItem">
+            <TextView
+                style="@style/RadioSettingTitle"
+                android:text="@string/setting_time_sync" />
+            <TextView
+                style="@style/RadioSettingDesc"
+                android:text="@string/setting_time_sync_desc" />
+        </LinearLayout>
+
+        <View style="@style/MainSettingDivider" />
+
+        <!-- 固件升级 -->
+        <LinearLayout
+            android:id="@+id/firmwareSettingItem"
+            style="@style/RadioSettingItem">
+            <TextView
+                style="@style/RadioSettingTitle"
+                android:text="@string/setting_firmware" />
+            <TextView
+                style="@style/RadioSettingDesc"
+                android:text="@string/setting_firmware_desc" />
+        </LinearLayout>
+
+        <View style="@style/MainSettingDivider" />
+
+        <!-- 关于 -->
+        <LinearLayout
+            android:id="@+id/aboutSettingItem"
+            style="@style/RadioSettingItem">
+            <TextView
+                style="@style/RadioSettingTitle"
+                android:text="@string/about_button" />
+            <TextView
+                style="@style/RadioSettingDesc"
+                android:text="@string/setting_about_desc" />
+        </LinearLayout>
+
+        <View style="@style/MainSettingDivider" />
+
+        <!-- 断开连接 -->
+        <LinearLayout
+            android:id="@+id/disconnectItem"
+            style="@style/RadioSettingItem">
+            <TextView
+                style="@style/RadioSettingTitle"
+                android:text="@string/disconnect"
+                android:textColor="#FF3B4A" />
+        </LinearLayout>
+
+        <!-- 调试终端：实时显示协议收发/状态/错误（替代弹窗报错） -->
+        <!-- 注意：终端正文可长按复制，会吃掉点击事件，因此彩蛋监听挂在这个标题上而非终端窗口 -->
+        <TextView
+            android:id="@+id/terminalHeader"
+            style="@style/SectionHeader"
+            android:text="@string/debug_terminal" />
+
+        <ScrollView
+            android:id="@+id/terminalScroll"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="#FF16161E"
+            android:nestedScrollingEnabled="true"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/terminalText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textColor="#FF7CFC9B"
+                android:textIsSelectable="true"
+                android:textSize="11sp"
+                android:lineSpacingMultiplier="1.15" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/copyLogBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/copy_log"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+</ScrollView>

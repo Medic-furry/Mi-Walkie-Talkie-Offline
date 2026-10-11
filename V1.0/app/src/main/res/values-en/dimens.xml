@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 英文 "Warning!" 是单个长单词，44sp 会超出可用行宽被硬拆成 "Warnin / g!"；
+         英文用 30sp（仍为原始 22sp 的 1.4 倍，且完整单行） -->
+    <dimen name="flash_warn_title_size">30sp</dimen>
+</resources>

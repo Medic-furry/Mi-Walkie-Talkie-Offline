@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mi Walkie Offline</string>
+
+    <string name="first_run_risk_title">Firmware Flashing Risk</string>
+    <string name="first_run_risk_message">Flashing firmware carries risks, including device damage or inability to restore the official state. You assume all consequences of flashing firmware using this app.</string>
+    <string name="first_run_risk_confirm">I understand</string>
+
+    <string name="first_run_legal_title">Legal Risk</string>
+    <string name="first_run_legal_message">After flashing, non-amateur radio frequencies may be written, which carries legal risk. Please ensure you have obtained a license from your local government.</string>
+    <string name="first_run_legal_confirm">I understand</string>
+
+    <string name="change_language">语言</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_english">English</string>
+    <string name="about_language_switched">Language switched</string>
+
+    <string name="permission_title">Bluetooth &amp; Location Permission</string>
+    <string name="permission_message">Connecting to your radio requires Bluetooth permission. Due to Android\'s security mechanism, granting Bluetooth permission also requires granting Location permission.\n\nThis app does NOT collect any location information. Location permission is only used for Bluetooth scanning.</string>
+    <string name="permission_confirm">I understand</string>
+
+    <string name="scan_title">Select Radio</string>
+    <string name="scan_hint">Scanning for nearby radios…</string>
+    <string name="scan_refresh">Rescan</string>
+    <string name="scan_empty">No radio found. Make sure the device is powered on and nearby.</string>
+
+    <string name="main_title">Radio</string>
+    <string name="about_button">About</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="debug_terminal">Debug Console</string>
+    <string name="copy_log">Copy logs</string>
+    <string name="copy_log_done">Logs copied to clipboard</string>
+    <string name="copy_log_empty">No logs to copy</string>
+    <string name="firmware_update">Flash Firmware</string>
+
+    <!-- Main: connection state -->
+    <string name="connecting_state">Connecting…</string>
+    <string name="disconnected_state">Disconnected</string>
+    <string name="connect_success">Radio connected</string>
+    <string name="connect_failed">Connection failed or timed out. Make sure the radio is powered on.</string>
+    <string name="handshaking_state">Protocol handshaking…</string>
+    <string name="connected_gatt_state">Connected, preparing handshake…</string>
+
+    <!-- Main: channel & frequency -->
+    <string name="frequency_rx">RX Frequency</string>
+    <string name="frequency_tx">TX Frequency</string>
+
+    <!-- Main: settings -->
+    <string name="setting_firmware">Firmware Flash</string>
+    <string name="setting_firmware_desc">Update firmware or install third-party firmware</string>
+
+    <!-- Main: original-style settings -->
+    <string name="section_channel">Channels</string>
+    <string name="section_radio_setting">Radio Settings</string>
+    <string name="waiting_freq_data">Waiting for frequency data…</string>
+    <string name="setting_radio_name">Radio Name</string>
+    <string name="setting_radio_name_desc">Edit the radio name</string>
+    <string name="setting_dual_band">Dual Band Mode</string>
+    <string name="setting_dual_band_desc">Receive two channels at the same time</string>
+    <string name="setting_power">Power Level</string>
+    <string name="setting_power_desc">Higher power for longer range</string>
+    <string name="power_high_5w">High (5W)</string>
+    <string name="power_low">Low (3W)</string>
+    <string name="reading_params_state">Reading device parameters…</string>
+    <string name="need_connect_first">Connect to the radio first</string>
+    <string name="setting_applied">Setting applied</string>
+    <string name="setting_failed">Setting rejected by device</string>
+    <string name="time_sync_sent">Time sync sent</string>
+    <string name="rename_hint">Enter a new radio name</string>
+    <string name="setting_time_sync">Time Sync</string>
+    <string name="setting_time_sync_desc">Sync phone time to the radio</string>
+    <string name="setting_about_desc">App introduction 语言</string>
+
+    <!-- Main: placeholder -->
+
+    <!-- Version info -->
+
+    <string name="about_title">About</string>
+    <string name="about_github">Visit GitHub project</string>
+    <string name="about_risk_disclosure">Risk Disclosure</string>
+
+    <!-- Channel settings -->
+    <string name="back">Back</string>
+    <string name="click_to_edit">Tap to edit</string>
+    <string name="tab_custom_channel">Custom</string>
+    <string name="tab_preset_channel">Preset</string>
+    <string name="add_channel">Add channel</string>
+    <string name="edit_channel_title">Edit channel</string>
+    <string name="add_channel_title">Add channel</string>
+    <string name="done">Done</string>
+    <string name="channel_name_label">Name</string>
+    <string name="channel_name_hint">Enter channel name</string>
+    <string name="channel_section">Channel</string>
+    <string name="css_section">Sub-tone (optional)</string>
+    <string name="rx_css_label">RX sub-tone</string>
+    <string name="tx_css_label">TX sub-tone</string>
+    <string name="css_hint_1">● Setting an RX sub-tone blocks signals with mismatched TX sub-tones</string>
+    <string name="css_hint_2">● If one side sets an RX sub-tone, the other side must set the same TX sub-tone to communicate</string>
+    <string name="delete">Delete</string>
+    <string name="delete_channel_confirm">Delete this channel?</string>
+    <string name="channel_op_success">Success</string>
+    <string name="channel_op_failed">Failed</string>
+    <string name="invalid_freq">Invalid frequency (e.g. 438.7125)</string>
+    <string name="preset_channel_name">Public channel %1$d</string>
+    <string name="preset_remote_channel_name">Amateur channel %1$d</string>
+    <string name="preset_public_header">China Public Channels</string>
+    <string name="preset_public_range">409.7500 – 409.9875</string>
+    <string name="preset_remote_header">Amateur Channels</string>
+    <string name="preset_remote_range">430.000 – 440.000</string>
+    <string name="channel_activated">Switched to %s</string>
+    <string name="edit">Edit</string>
+    <string name="scan_mode_can_not_setting">Cannot set channel in scan mode</string>
+    <string name="team_mode_can_not_setting">Cannot set channel in team mode</string>
+    <string name="channel_option_freqs">RX %1$s   TX %2$s</string>
+
+    <string name="firmware_select_file">Select firmware file</string>
+
+    <!-- Firmware dir scan (mirrors com.ifengyu.intercom.ui.baseui.BaseUpdateActivity) -->
+    <string name="firmware_all_files_title">"All files access" required</string>
+    <string name="firmware_all_files_message">Since Android 11, reading .bin firmware files from /sdcard/Mi-walkie-talkie.firmware/ requires "All files access". Please allow this app to access all files in Settings, then retry.</string>
+    <string name="firmware_grant_access">Open Settings</string>
+    <string name="firmware_filter_hint">Hardware version hw%1$d, matching shark_*_hw%1$d.bin</string>
+    <string name="firmware_filter_hint_unknown">Device not connected, hardware version unknown — listing all shark_*.bin</string>
+    <string name="firmware_no_match">No matching firmware file found in the directory</string>
+    <string name="firmware_dir_missing">Firmware directory not found: %1$s</string>
+    <string name="firmware_flash">Flash</string>
+    <string name="firmware_picked_file">Selected: %1$s</string>
+    <string name="firmware_picked">Selected: %1$s (%2$d bytes, %3$d packets)</string>
+
+    <!-- Firmware update page (mirrors SealSharkMcuUpdateActivity state machine) -->
+    <string name="fw_size">%1$d bytes / %2$d packets</string>
+    <string name="fw_reading">Reading firmware file…</string>
+    <string name="fw_state_prepare">Requesting upgrade mode…</string>
+    <string name="fw_state_transfer">Transferring firmware…</string>
+    <string name="fw_state_verify">Transfer complete, waiting for CRC32 check…</string>
+    <string name="fw_state_success">Update successful, the radio will reboot</string>
+    <string name="fw_state_fail">Update failed: %1$s</string>
+    <string name="fw_state_fail_low_power">Update failed: radio battery too low, charge it and retry</string>
+    <string name="fw_hint_do_not_power_off">Do not power off the radio or drop the connection during the update</string>
+    <string name="fw_hint_finished">Update finished</string>
+    <string name="fw_action_close">Close</string>
+    <string name="fw_action_retry">Retry</string>
+    <string name="fw_back_blocked">Upgrading firmware, please wait…</string>
+
+    <!-- High-risk flashing confirmation -->
+    <string name="flash_warning_title">Warning!</string>
+    <string name="flash_warning_message">Flashing firmware is a high-risk operation| and may cause| permanent damage to the device.</string>
+    <string name="flash_warning_caution">Proceed with| caution!</string>
+    <string name="flash_warning_cancel">Cancel</string>
+    <string name="flash_warning_confirm">Confirm</string>
+    <string name="flash_warning_confirm_countdown">Confirm (%1$ds)</string>
+
+    <!-- Red range warning in the frequency input dialog -->
+    <string name="freq_range_warning">Without a modded firmware only 400-470MHz is writable.| Do not write frequencies outside| the firmware range, or the device may fail.</string>
+
+    <!-- Hidden switch on the About page -->
+    <string name="about_countdown_off">Flash confirmation countdown disabled</string>
+    <string name="about_countdown_on">Flash confirmation countdown enabled</string>
+</resources>

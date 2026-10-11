@@ -1,0 +1,16 @@
+version: 2.11.1
+apkFileName: v15_rebuilt_signed.apk
+isFrameworkApk: false
+usesFramework:
+  ids:
+  tag: null
+sdkInfo:
+packageInfo:
+  forcedPackageId: null
+  renameManifestPackage: null
+versionInfo:
+  versionCode: null
+  versionName: null
+sharedLibrary: false
+sparseResources: false
+compactEntries: false

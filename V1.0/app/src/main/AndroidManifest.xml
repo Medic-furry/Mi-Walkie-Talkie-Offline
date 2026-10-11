@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- BLE 相关权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <!-- 定位权限：安卓 BLE 扫描要求（仅用于 BLE 扫描，不获取定位信息） -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- 存储权限：读取固件目录 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29"
+        tools:ignore="ScopedStorage" />
+
+    <!-- Android 11+ 读取 /sdcard/Mi-walkie-talkie.firmware/ 下的 .bin（非媒体文件）
+         必须有「所有文件访问权限」，否则 Environment.getExternalStorageDirectory()
+         下的目录 listFiles() 对 targetSdk>=30 的应用一律返回空。 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <!-- 网络：关于页跳转 GitHub（可选） -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <application
+        android:name=".MiWalkieApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MiWalkieOffline">
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.FirstRunActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PermissionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.DeviceScanActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.AboutActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.RiskDisclosureActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.EasterEggActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.ChannelSettingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.ChannelEditActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.FirmwareUpdateActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+
+    </application>
+
+</manifest>
