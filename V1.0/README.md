@@ -8,8 +8,7 @@
 本项目属于**非官方第三方项目**，不代表相关软件开发者或权利人的官方产品，
 不构成与其之间的隶属、合作、授权、赞助或背书关系。
 
-- 包名（applicationId）：`rex.medicfurry.miradio`（与既有应用共存，互不覆盖）
-- 源码命名空间：`com.medicfurry.walkieoffline`
+- 包名（applicationId）：`rex.medicfurry.miradio`（可与官方 APP 同时安装共存，互不覆盖）
 - 最低系统：Android 7.0（minSdk 24），目标 targetSdk 34，compileSdk 36
 - 语言：Kotlin + ViewBinding + 协程；Java 17
 
@@ -38,7 +37,7 @@
 - 完全免除登录，实现离线本地化运行
 - 保留 BLE / MCU / 固件升级相关逻辑
 - 支持通过本地文件夹 `/sdcard/Mi-walkie-talkie.firmware/` 刷入固件
-- 与既有应用共存（包名不同），互不覆盖
+- 与官方 APP 共存（包名不同），可同时安装，互不覆盖
 
 代码里标注"依据实测行为还原／勿改"的段落（如 MTU 取值、两个通知通道都要订阅）
 是设备端实际要求，**请勿随意"优化"**，详见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) 第 14 节。
