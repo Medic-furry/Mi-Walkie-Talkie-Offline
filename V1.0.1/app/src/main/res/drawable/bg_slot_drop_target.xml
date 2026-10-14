@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 拖拽悬停中的有效落点：空槽变蓝（描边加粗 + 浅蓝填充），
+     与 bg_slot_placeholder（灰色虚线）形成对比——用户以「变蓝」判定可以放这里 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#3328AA9A" />
+
+    <stroke
+        android:width="2dp"
+        android:color="#28AA9A" />
+
+    <corners android:radius="6dp" />
+
+    <padding
+        android:bottom="8dp"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp" />
+</shape>

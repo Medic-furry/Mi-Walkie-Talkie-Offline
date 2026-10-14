@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">小米对讲离线</string>
+
+    <!-- 首次启动风险提示 -->
+    <string name="first_run_risk_title">固件刷写风险提示</string>
+    <string name="first_run_risk_message">刷写固件存在风险，可能导致设备损坏或无法恢复官方状态。使用本应用刷写固件产生的任何后果，需要您自己承担。</string>
+    <string name="first_run_risk_confirm">我已知</string>
+
+    <!-- 二次法律风险提示 -->
+    <string name="first_run_legal_title">法律风险提示</string>
+    <string name="first_run_legal_message">刷写固件后可写入非业余无线电频率，具有法律风险。请确保您已获取当地政府的使用许可。</string>
+    <string name="first_run_legal_confirm">我已知晓</string>
+
+    <!-- 语言切换 -->
+    <string name="change_language">Language</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_english">English</string>
+    <string name="about_language_switched">语言已切换</string>
+
+    <!-- 权限提示 -->
+    <string name="permission_title">蓝牙与定位权限说明</string>
+    <string name="permission_message">连接对讲机需要蓝牙权限。由于安卓系统的安全机制，申请蓝牙权限时必须同时授予定位权限。\n\n本应用不会获取任何定位信息，定位权限仅用于蓝牙扫描。</string>
+    <string name="permission_confirm">我已知晓</string>
+
+    <!-- 设备扫描 -->
+    <string name="scan_title">选择对讲机</string>
+    <string name="scan_hint">正在扫描附近的对讲机…</string>
+    <string name="scan_refresh">重新扫描</string>
+    <string name="scan_empty">未发现对讲机，请确认设备已开机并靠近手机</string>
+
+    <!-- 主页面 -->
+    <string name="main_title">对讲机</string>
+    <string name="about_button">关于</string>
+    <string name="disconnect">断开连接</string>
+    <string name="reconnect">恢复连接</string>
+    <string name="css_off">关闭</string>
+    <string name="debug_terminal">调试终端</string>
+    <string name="copy_log">复制日志</string>
+    <string name="copy_log_done">日志已复制到剪贴板</string>
+    <string name="copy_log_empty">暂无日志可复制</string>
+    <string name="firmware_update">刷入固件</string>
+
+    <!-- 主页面：连接状态 -->
+    <string name="connecting_state">连接中…</string>
+    <string name="disconnected_state">未连接</string>
+    <string name="connect_success">对讲机连接成功</string>
+    <string name="connect_failed">对讲机连接失败或超时，请确认设备已开机</string>
+    <string name="handshaking_state">协议握手中…</string>
+    <string name="connected_gatt_state">已建立连接，准备握手…</string>
+
+    <!-- 主页面：信道频率显示 -->
+    <string name="frequency_rx">接收频率</string>
+    <string name="frequency_tx">发射频率</string>
+
+    <!-- 主页面：设置项 -->
+    <string name="setting_firmware">固件刷写</string>
+    <string name="setting_firmware_desc">更新固件或安装第三方固件</string>
+
+    <!-- 主页面：照原版设置界面 -->
+    <string name="section_channel">频道设置</string>
+    <string name="section_radio_setting">对讲机设置</string>
+    <string name="waiting_freq_data">等待读取频率数据…</string>
+    <string name="setting_radio_name">对讲机名称</string>
+    <string name="setting_radio_name_desc">可编辑对讲机名称</string>
+    <string name="setting_dual_band">双频模式</string>
+    <string name="setting_dual_band_desc">开启后可同时收到两个频道的信息</string>
+    <string name="setting_power">功率等级</string>
+    <string name="setting_power_desc">高功率的通讯距离更远</string>
+    <string name="power_high_5w">高(5W)</string>
+    <string name="power_low">低（3W）</string>
+    <string name="reading_params_state">正在读取设备参数…</string>
+    <string name="need_connect_first">请先连接对讲机</string>
+    <string name="setting_applied">设置成功</string>
+    <string name="setting_failed">设置失败，设备拒绝</string>
+    <string name="time_sync_sent">已发送时间校准</string>
+    <string name="rename_hint">输入新的对讲机名称</string>
+    <string name="setting_time_sync">时间校准</string>
+    <string name="setting_time_sync_desc">将手机时间同步至对讲机</string>
+    <string name="setting_about_desc">APP介绍 Language</string>
+
+    <!-- 主页面：功能未实现提示 -->
+
+    <!-- 版本信息 -->
+
+    <!-- 关于 -->
+    <string name="about_title">关于</string>
+    <string name="about_github">访问 GitHub 项目主页</string>
+    <string name="about_risk_disclosure">风险告知</string>
+
+    <!-- 频道设置 -->
+    <string name="back">返回</string>
+    <string name="click_to_edit">点击编辑</string>
+    <string name="tab_custom_channel">自定义频道</string>
+    <string name="tab_preset_channel">预设频道</string>
+    <string name="add_channel">新增信道</string>
+    <string name="edit_channel_title">修改频道</string>
+    <string name="add_channel_title">新增频道</string>
+    <string name="done">完成</string>
+    <string name="channel_name_label">名称</string>
+    <string name="channel_name_hint">请输入频道名称</string>
+    <string name="channel_section">频道</string>
+    <string name="css_section">亚音（选填）</string>
+    <string name="rx_css_label">接收亚音</string>
+    <string name="tx_css_label">发射亚音</string>
+    <string name="css_hint_1">● 设置接收亚音，可屏蔽发射亚音不匹配的信号</string>
+    <string name="css_hint_2">● 一方设置接收亚音后，另一方需要设置相同的发射亚音才可正常通讯</string>
+    <string name="delete">删除</string>
+    <string name="delete_channel_confirm">确定删除该频道？</string>
+    <string name="channel_op_success">操作成功</string>
+    <string name="channel_op_failed">操作失败</string>
+    <string name="channel_op_waiting">正在等待设备确认…</string>
+    <string name="channel_number_label">频道号</string>
+    <string name="channel_no_range">可选范围 1–20，仅列出空闲槽位</string>
+    <string name="channel_no_occupied">该频道号已被占用，请重新选择</string>
+    <string name="channel_migrate_failed_title">迁移失败</string>
+    <string name="channel_migrate_failed_msg">旧位置的频道已删除，但新位置写入失败。原频道数据已保留，可重试写入；也可取消后重新进入本页查看设备实际状态。</string>
+    <string name="retry">重试</string>
+    <string name="reorder_title">正在排序</string>
+    <string name="reorder_progress">正在排序 %1$d/%2$d 步，请稍候…</string>
+    <string name="reorder_no_free_slot">无空闲槽位，无法排序</string>
+    <string name="reorder_failed_msg">排序在第 %1$d 步失败，已停止。请退出本页后重新进入，查看设备实际状态。</string>
+    <string name="reorder_cancelled">排序已停在安全点</string>
+    <string name="reorder_drag_handle">拖动排序</string>
+    <string name="slot_empty_hint">空槽位（可拖入）</string>
+    <string name="organize_channels">整理</string>
+    <string name="organize_pending_changes">待提交 %1$d 项改动</string>
+    <string name="organize_delete_selected">删除所选</string>
+    <string name="organize_restore_selected">恢复所选</string>
+    <string name="organize_save">保存</string>
+    <string name="organize_cancel">取消</string>
+    <string name="organize_need_select">请先勾选频道</string>
+    <string name="organize_nothing_to_commit">没有需要提交的改动</string>
+    <string name="organize_confirm_title">提交整理</string>
+    <string name="organize_confirm_msg">将向设备写入 %1$d 条指令（%2$d 条删除 + %3$d 条插入），过程中请勿断开对讲机。</string>
+    <string name="organize_saved">整理已保存</string>
+    <string name="organize_cancelled">已取消，未写入设备</string>
+    <string name="organize_exit_confirm_title">放弃本次整理？</string>
+    <string name="organize_exit_confirm_msg">整理改动尚未写入设备，退出将全部丢弃。</string>
+    <string name="organize_channel_check">勾选频道</string>
+    <string name="organize_deleted_mark">已标记删除</string>
+    <string name="organize_no_channel">没有可整理的自定义频道</string>
+    <string name="reorder_failed_remaining">第 %1$d 条指令失败，已停止。剩余 %2$d 条指令可重试。</string>
+    <string name="reorder_retry_remaining">重试剩余</string>
+    <string name="reorder_give_up">放弃</string>
+    <string name="invalid_freq">频率格式不正确（如 438.7125）</string>
+    <string name="preset_channel_name">公众频道 %1$d</string>
+    <string name="preset_remote_channel_name">远距离频道 %1$d</string>
+    <string name="preset_public_header">公众频道</string>
+    <string name="preset_public_range">409.7500 – 409.9875</string>
+    <string name="preset_remote_header">远距离频道</string>
+    <string name="preset_remote_range">430.000 – 440.000</string>
+    <string name="channel_activated">已切换到 %s</string>
+    <string name="edit">编辑</string>
+    <string name="scan_mode_can_not_setting">扫描模式下不能设置频道</string>
+    <string name="team_mode_can_not_setting">组队模式下不能设置频道</string>
+    <string name="channel_option_freqs">接收 %1$s   发射 %2$s</string>
+
+    <!-- 固件 -->
+    <string name="firmware_select_file">选择固件文件</string>
+
+    <!-- 固件目录读取（复刻原版 com.ifengyu.intercom.ui.baseui.BaseUpdateActivity） -->
+    <string name="firmware_all_files_title">需要「所有文件访问权限」</string>
+    <string name="firmware_all_files_message">Android 11 起，读取 /sdcard/Mi-walkie-talkie.firmware/ 下的 .bin 固件需要「所有文件访问权限」。请在设置中允许本应用访问所有文件后重试。</string>
+    <string name="firmware_grant_access">去设置开启</string>
+    <string name="firmware_filter_hint">硬件版本 hw%1$d，匹配 shark_*_hw%1$d.bin</string>
+    <string name="firmware_filter_hint_unknown">未连接设备，未获取硬件版本，列出全部 shark_*.bin</string>
+    <string name="firmware_no_match">目录中未找到匹配的固件文件</string>
+    <string name="firmware_dir_missing">固件目录不存在：%1$s</string>
+    <string name="firmware_flash">刷写</string>
+    <string name="firmware_picked_file">已选固件：%1$s</string>
+    <string name="firmware_picked">已选择固件：%1$s（%2$d 字节，%3$d 包）</string>
+
+    <!-- 固件升级页（复刻原版 SealSharkMcuUpdateActivity 的状态机） -->
+    <string name="fw_size">%1$d 字节 / %2$d 包</string>
+    <string name="fw_reading">正在读取固件文件…</string>
+    <string name="fw_state_prepare">正在请求设备进入升级模式…</string>
+    <string name="fw_state_transfer">正在传输固件…</string>
+    <string name="fw_state_verify">已发送完毕，等待设备 CRC32 校验…</string>
+    <string name="fw_state_success">升级成功，对讲机将重启</string>
+    <string name="fw_state_fail">升级失败：%1$s</string>
+    <string name="fw_state_fail_low_power">升级失败：对讲机电量不足，请充电后再试</string>
+    <string name="fw_hint_do_not_power_off">升级过程中请勿关闭对讲机或断开连接</string>
+    <string name="fw_hint_finished">升级已完成</string>
+    <string name="fw_action_close">关闭</string>
+    <string name="fw_action_retry">重试</string>
+    <string name="fw_back_blocked">正在升级固件，请稍候…</string>
+
+    <!-- 刷机高风险确认弹窗 -->
+    <string name="flash_warning_title">警告！</string>
+    <!-- 「|」= 允许断行的语义块边界，块内绝不拆词（如「故障」） -->
+    <string name="flash_warning_message">刷机为高风险操作，|有可能会导致|设备永久性故障，</string>
+    <string name="flash_warning_caution">谨慎操作！</string>
+    <string name="flash_warning_cancel">取消</string>
+    <string name="flash_warning_confirm">确认</string>
+    <string name="flash_warning_confirm_countdown">确认 (%1$ds)</string>
+
+    <!-- 频率输入弹窗的红色范围警告 -->
+    <string name="freq_range_warning">未刷机只能写入 400-470MHz，|不得写入超出固件范围的频率，|否则设备会故障。</string>
+
+    <!-- 软件声明与授权说明（法律文本，保持原文，不随语言翻译） -->
+    <string name="license_statement" translatable="false"><![CDATA[<h1>软件声明与授权说明</h1>
+<p>本项目由 GitHub 账户 <b>@Medic-furry</b> 维护，通过以下 GitHub 仓库免费公开发布：<br/>
+<b>项目地址：</b> <a href="https://github.com/Medic-furry/Mi-Walkie-Talkie-Offline">https://github.com/Medic-furry/Mi-Walkie-Talkie-Offline</a></p>
+<h2>一、许可协议与商业使用限制</h2>
+<p>本项目中由维护者拥有或有权授权的原创代码、修改内容及其他材料，适用 <b>PolyForm Noncommercial License 1.0.0</b> 许可协议。<br/>
+完整许可条款：<br/>
+<a href="https://polyformproject.org/licenses/noncommercial/1.0.0">https://polyformproject.org/licenses/noncommercial/1.0.0</a><br/>
+在遵守适用许可条款的前提下，相关内容可用于非商业目的的使用、修改和再分发。<br/>
+未经相关版权持有人事先书面许可，不得将受本许可约束的内容用于商业性用途，包括收费销售、付费下载、收费分发及其他商业化利用行为。<br/>
+本项目的许可范围仅限于维护者拥有或有权授权的内容，不包含任何第三方依法享有权利的代码、素材、商标或其他知识产权。</p>
+<h2>二、作者署名与修改版本</h2>
+<p>再分发本项目或其修改版本时，应保留适用许可协议要求的版权声明、作者通知、许可证信息及原始项目来源。<br/>
+不得将原始项目或他人已有的代码虚假声明为自身独立创作的成果，不得擅自删除适用许可协议要求保留的作者署名及版权通知。<br/>
+修改版本应标明其非官方版本的性质，并说明主要修改内容。修改版本的名称及标识应与原始项目具有可识别的区别。<br/>
+不得将修改版本声明为原始官方版本，不得将原作者的创作或维护行为归属于修改者，也不得以未经授权的方式声明修改版本获得原作者或相关第三方的认可。<br/>
+修改者对其实际新增的原创贡献享有相应权利，但该权利不构成对原始项目及他人既有贡献的权利主张。</p>
+<h2>三、免费发布与第三方收费交易</h2>
+<p>本软件由维护者免费公开发布。维护者未授权任何第三方收费销售本软件。<br/>
+任何第三方未经授权实施的收费销售、付费下载、收费分发或其他收费交易，均不代表维护者的授权、参与或认可，与维护者无关。<br/>
+维护者未参与上述第三方交易，未作为相关交易的销售方、代理方或中间服务提供者，亦未因该交易收取款项或与购买者建立销售关系。<br/>
+通过第三方渠道付费获取本软件所产生的付款、退款、下载交付、软件故障、技术支持及售后纠纷，属于购买者与实际销售方之间的交易事项。维护者不承担该第三方交易中销售方的责任，不负责处理相关付款、退款或交付事项，也不因该交易提供技术支持、更新或售后服务。适用法律另有强制规定的除外。<br/>
+本软件的官方免费发布渠道为上述 GitHub 项目仓库。未经维护者授权的第三方收费渠道不属于本软件的官方发布渠道。</p>
+<h2>四、第三方软件与项目关系</h2>
+<p>本项目在开发过程中对相关第三方软件的功能及运行行为进行了技术分析。本项目属于非官方第三方项目，不代表相关软件开发者或权利人的官方产品，不构成与其之间的隶属、合作、授权、赞助或背书关系。<br/>
+相关第三方软件的名称、商标、原始代码、图标、文档及其他受保护内容，其权利归各自权利人所有。本声明不转让或授予任何第三方知识产权。<br/>
+本项目的许可协议仅适用于维护者拥有或有权授权的内容。第三方组件、代码或素材适用的独立许可证及相关条件，依各自适用条款确定。<br/>
+本项目不保证与相关第三方软件的所有版本持续兼容。第三方软件的更新、接口变更或服务调整可能影响本项目的功能。</p>
+<h2>五、免责声明</h2>
+<p>本软件按现状提供。除适用法律另有强制规定外，维护者不对本软件的适用性、持续可用性、特定用途或与第三方软件的持续兼容性作出保证。<br/>
+本声明不排除适用法律规定不得排除或限制的责任。</p>
+<h2>六、维护者标识与版权通知</h2>
+<p>本项目使用 GitHub 账户 <b>@Medic-furry</b> 作为公开维护者标识。该标识为 GitHub 用户名。<br/>
+Required Notice: Copyright © 2026, project maintainer identified by GitHub account @Medic-furry. Original project: <a href="https://github.com/Medic-furry/Mi-Walkie-Talkie-Offline">https://github.com/Medic-furry/Mi-Walkie-Talkie-Offline</a><br/>
+上述版权通知仅适用于维护者拥有或有权授权的原创代码、修改内容及其他原创贡献，不涵盖原软件或第三方依法享有权利的内容。<br/>
+<b>许可协议：</b> PolyForm Noncommercial License 1.0.0<br/>
+<b>许可条款：</b> <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">https://polyformproject.org/licenses/noncommercial/1.0.0</a></p>]]></string>
+
+    <!-- 关于页隐藏开关 -->
+    <string name="about_countdown_off">已关闭刷机确认倒计时</string>
+    <string name="about_countdown_on">已开启刷机确认倒计时</string>
+    <string name="preset_edit_title">编辑预设频道（仅亚音）</string>
+</resources>
