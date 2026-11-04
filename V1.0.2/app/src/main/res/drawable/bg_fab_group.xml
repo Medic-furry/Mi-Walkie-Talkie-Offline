@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 底部按钮组容器：偏方形圆角（用户反馈"整理和添加的按钮不和谐，要做成
+     【 整理 I + 】这种风格、按钮偏方形圆角"）。内部两段各带 selectableItemBackground 水波纹。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#28AA9A" />
+    <corners android:radius="14dp" />
+</shape>

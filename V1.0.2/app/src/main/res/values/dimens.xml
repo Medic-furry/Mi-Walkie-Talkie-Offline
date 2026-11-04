@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 刷机警告弹窗标题字号：中文「警告！」为 3~4 个全角字符，44sp 单行放得下 -->
+    <dimen name="flash_warn_title_size">44sp</dimen>
+</resources>

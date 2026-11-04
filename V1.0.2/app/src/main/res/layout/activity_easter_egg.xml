@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FF16161E"
+    android:padding="8dp">
+
+    <!-- 图片不写在 android:src，由代码从 assets 全分辨率解码后设置，避免被缩放/降色 -->
+    <com.medicfurry.walkieoffline.ui.ZoomableImageView
+        android:id="@+id/eggImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/githubBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/about_github"
+        android:textAllCaps="false" />
+
+</LinearLayout>
