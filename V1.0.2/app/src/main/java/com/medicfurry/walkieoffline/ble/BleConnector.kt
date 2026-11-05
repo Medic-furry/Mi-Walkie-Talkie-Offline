@@ -185,12 +185,7 @@ class BleConnector {
         /** 信道增删改等待设备确认的超时（与查询链 10s 兜底同量级） */
         private const val CHANNEL_OP_TIMEOUT_MS = 10_000L
 
-        /**
-         * USERDEF 探针的 0 基 no 上界 = 1.0.5+M1 固件自定义频道上限 29 - 1
-         * （与 ChannelEditActivity.MAX_CHANNEL_SLOTS=29 同源；探针只是兜底上界，
-         * 实际同步数量以设备返回为准）
-         */
-        private const val CUSTOM_PROBE_MAX_NO = 28
+        // 探针上界已改为动态 _channelCapacity（29=1.0.5+M1 / 20=官方，见指纹判定）
 
 
         private const val BASE = "-0000-1000-8000-00805f9b34fb"
@@ -530,6 +525,10 @@ class BleConnector {
         val op = runCatching { SealProtos.decodeChannelOperate(payload) }.getOrNull()
         if (op != null && (op.result >= 0 || op.ch != null)) {
             val ch = op.ch
+            if (fingerprintActive) {
+                handleFingerprintAck(op)
+                return true
+            }
             val isQueryFrame = !expectModify &&
                 (op.option == SealProtos.ChOption.QUERY || op.option < 0)
             if (isQueryFrame) {
@@ -550,6 +549,14 @@ class BleConnector {
                         return true
                     }
                     if (idx >= 0) queryBuffer[idx] = ch else queryBuffer.add(ch)
+                    // 容量封顶：自定义链记录数达到设备容量即收尾（官方 20 / 1.0.5+M1 29），
+                    // 防御设备列表返回超容量记录（真机实测 >29 显示 bug）
+                    if (activeQueryType == SealProtos.ChType.USERDEF && queryBuffer.size >= _channelCapacity.value) {
+                        logI( "自定义链已达容量上限 $_channelCapacity.value 条，收尾")
+                        handler.removeCallbacks(channelFlushRunnable)
+                        channelFlushRunnable.run()
+                        return true
+                    }
                     // FRS 记录上限 = NVM h=0x14 容量 50：到顶同样收尾（防御设备永不回 EMPTY）
                     if (activeQueryType == SealProtos.ChType.FRS_RECORD && queryBuffer.size >= 50) {
                         logI( "FRS: 已收满 50 条上限，结束查询链")
@@ -569,7 +576,7 @@ class BleConnector {
                         } else if (probeNo >= 0) {
                             // USERDEF 探针命中：该槽有频道，续探下一槽
                             val next = probeNo + 1
-                            if (next <= CUSTOM_PROBE_MAX_NO) {
+                            if (next < _channelCapacity.value) {
                                 probeNo = next
                                 send(FrameCodec.CMD_CHANNEL_QUERY,
                                     SealProtos.encodeChannelInfoQuery(SealProtos.ChType.USERDEF, next))
@@ -594,8 +601,8 @@ class BleConnector {
                         // 多少就同步多少；官方 20 条固件上探针全部 EMPTY，约 2 秒内正常收尾。
                         val next = if (probeNo >= 0) probeNo + 1
                             else (queryBuffer.maxOfOrNull { it.no } ?: -1) + 1
-                        if (activeQueryType == SealProtos.ChType.USERDEF && next <= CUSTOM_PROBE_MAX_NO) {
-                            // 无条件逐槽探到上限：设备可能在任意位置留空槽（如只占用 0 号和 21~28 号），
+                        if (activeQueryType == SealProtos.ChType.USERDEF && next < _channelCapacity.value) {
+                            // 无条件逐槽探到容量上限：设备可能在任意位置留空槽（如只占用 0 号和 21~28 号），
                             // 空槽不能提前收尾；官方 20 条固件多花 ~2 秒探空，1.0.5+M1 全量同步是主诉求
                             probeNo = next
                             logD( "EMPTY 后探针：显式查询 no=$next（空槽继续）")
@@ -642,13 +649,69 @@ class BleConnector {
     // k.clear()+k.addAll(r)+notifyDataSetChanged 一次性替换，UI 不逐帧刷新
     private var channelQueryActive = false
 
-    /**
-     * USERDEF 链 EMPTY 后的「显式 no 探针」状态（0 基槽位号；-1 = 未在探针模式）。
-     * 1.0.5+M1 真机实测：列表路径在 20 条处提前回 EMPTY（数量表 29 但路径另有 20 边界），
-     * 21~29 条读不到；0x29 读取支持显式 no（FRS 链已验证）——EMPTY 后逐槽探查
-     * 到 CUSTOM_PROBE_MAX_NO，设备实际存了多少就同步多少，非固定值。
-     */
     private var probeNo = -1
+
+    // ---------- 设备容量判定（固件指纹） ----------
+    // 判定链：① verSoft 修改标记（byte1≥1，1.0.5+M1 起固件自带；官方=0）；
+    // ② type3 单条探测（0x4E29 chType=3：1.0.5+M1 回记录（FM 数据区），官方回 EMPTY——真机实测）。
+    // 容量：修改固件=29，官方=20。全部读取/探针/写入/展示按容量封顶。
+    private val _channelCapacity = MutableStateFlow(29)
+    val channelCapacity: StateFlow<Int> = _channelCapacity
+    private var fingerprintActive = false
+    private var capacityDecided = false
+    private val fingerprintTimeoutRunnable = Runnable {
+        if (fingerprintActive) {
+            fingerprintActive = false
+            logW("固件指纹探测超时，按 1.0.5+M1（29 槽）处理")
+        }
+    }
+
+    /** 固件指纹判定（每次连接至多一次；自定义链收尾后自动触发） */
+    private fun decideCapacity(cap: Int, reason: String) {
+        capacityDecided = true
+        _channelCapacity.value = cap
+        logI("设备容量判定：%d 槽（%s）".format(cap, reason))
+    }
+
+    private fun maybeStartFingerprint() {
+        if (capacityDecided || fingerprintActive) return
+        // 严格串行：读取链/写入防抖未结束时不得启动（探测应答与读响应共用 0x4E2B）
+        if (channelQueryActive || channelOpPending) {
+            handler.postDelayed({ maybeStartFingerprint() }, 400)
+            return
+        }
+        // ① verSoft 修改标记（1.0.5+M1 起固件在 byte1 写修改序号；官方=0）
+        val vs = _deviceParam.value?.verSoft ?: -1
+        val modByte = (vs shr 16) and 0xFF
+        if (modByte > 0) {
+            decideCapacity(29, "verSoft 修改标记 byte=0x%02X".format(modByte))
+            return
+        }
+        // ② type3 单条探测：1.0.5+M1 回记录（FM 数据区），官方回 EMPTY
+        fingerprintActive = true
+        logI( "固件指纹探测：发送 0x4E29 chType=3 单条查询")
+        send(FrameCodec.CMD_CHANNEL_QUERY, SealProtos.encodeChannelInfoQuery(SealProtos.ChType.FRS))
+        handler.postDelayed(fingerprintTimeoutRunnable, 5_000)
+    }
+
+    /** 指纹应答处理：回记录 → 修改固件(29)；回 EMPTY → 官方(20)；未知 → 保守 29 */
+    private fun handleFingerprintAck(op: SealProtos.ChannelOperate) {
+        handler.removeCallbacks(fingerprintTimeoutRunnable)
+        fingerprintActive = false
+        capacityDecided = true
+        val ch = op.ch
+        if (ch != null && ch.isValid) {
+            logI( "固件指纹：type3 回记录（修改固件）")
+            _channelCapacity.value = 29
+        } else if (op.result == SealProtos.ChResult.EMPTY) {
+            logI( "固件指纹：type3 回 EMPTY（官方固件）")
+            _channelCapacity.value = 20
+        } else {
+            logI( "固件指纹：响应未知，按 1.0.5+M1（29 槽）处理")
+            _channelCapacity.value = 29
+        }
+        logI( "设备容量判定：%d 槽".format(_channelCapacity.value))
+    }
 
 
     /** 查询链临时缓冲（对应设备端临时列表 r），链结束才一次性倒入 _customChannels */
@@ -670,12 +733,15 @@ class BleConnector {
             _frsChannels.value = list
         } else {
             val list = raw.filter { it.type != SealProtos.ChType.FRS && it.type != SealProtos.ChType.FRS_RECORD }
-            logI( "信道查询完成，共 ${list.size} 个 (gen=${_queryGen.value + 1})")
+                .take(_channelCapacity.value)
+            logI( "信道查询完成，共 ${list.size} 个（容量 ${_channelCapacity.value}，gen=${_queryGen.value + 1}）")
             _customChannels.value = list
         }
         _queryGen.value = _queryGen.value + 1
         if (activeQueryType != SealProtos.ChType.FRS_RECORD) listener?.onCustomChannels(
             raw.filter { it.type != SealProtos.ChType.FRS && it.type != SealProtos.ChType.FRS_RECORD })
+        // 列表同步完成后自动判定设备容量（type3 指纹，每次连接一次）
+        handler.post { maybeStartFingerprint() }
     }
 
     /** 断连/重连时清理信道查询缓存（参照 slotCh1/slotCh2 清理点） */
@@ -687,6 +753,9 @@ class BleConnector {
         channelQueryActive = false
         activeQueryType = SealProtos.ChType.USERDEF
         probeNo = -1
+        fingerprintActive = false
+        capacityDecided = false
+        _channelCapacity.value = 29
         handler.removeCallbacks(channelFlushRunnable)
         // 解除增删改等待状态（避免重连后第一次写操作被防抖误拒）
         finishChannelOp()

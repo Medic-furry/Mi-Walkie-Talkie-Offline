@@ -124,7 +124,7 @@
     <string name="channel_op_failed">Failed</string>
     <string name="channel_op_waiting">Waiting for device confirmation…</string>
     <string name="channel_number_label">Channel No.</string>
-    <string name="channel_no_range">Only free slots are listed (1–200); writes beyond the device capacity are rejected by the device</string>
+    <string name="channel_no_range">Only free slots are listed (1–%1$d); writes beyond the device capacity are rejected by the device</string>
     <string name="channel_no_occupied">Channel number already in use, please choose another</string>
     <string name="custom_channel_full">Custom channel list is full (max %1$d)</string>
     <string name="channel_migrate_failed_title">Migration failed</string>
@@ -216,6 +216,15 @@
     <string name="freq_range_warning">Without a modded firmware only 400-470MHz is writable.| Do not write frequencies outside| the firmware range, or the device may fail.</string>
 
     <!-- Hidden switch on the About page -->
+    <string name="about_mod_channel">MOD Firmware Channels</string>
+    <string name="mod_channel_warning">Firmware development use ONLY: once a custom channel count is set, the app stops reading the firmware fingerprint and treats that number as the channel capacity. Forcing this on official firmware may cause unknown bugs.</string>
+    <string name="mod_channel_current_auto">Current: auto by firmware fingerprint (1.0.5+M1=29 / official=20)</string>
+    <string name="mod_channel_current_manual">Current: manually set to %1$d slots</string>
+    <string name="mod_channel_set">Set count</string>
+    <string name="mod_channel_follow">Clear, follow firmware</string>
+    <string name="mod_channel_cleared">Cleared, following firmware fingerprint</string>
+    <string name="mod_channel_input_hint">Channel count (20–200), empty = follow firmware</string>
+    <string name="mod_channel_set_done">Set: MOD firmware %1$d slots (takes effect after reconnect)</string>
     <string name="about_countdown_off">Flash confirmation countdown disabled</string>
     <string name="about_countdown_on">Flash confirmation countdown enabled</string>
     <string name="preset_edit_title">Edit preset (CTCSS only)</string>

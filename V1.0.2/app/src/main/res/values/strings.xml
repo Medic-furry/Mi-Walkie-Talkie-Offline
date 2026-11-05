@@ -130,7 +130,7 @@
     <string name="channel_op_failed">操作失败</string>
     <string name="channel_op_waiting">正在等待设备确认…</string>
     <string name="channel_number_label">频道号</string>
-    <string name="channel_no_range">仅列出空闲槽位（1–200）；超出设备容量的写入会被设备拒绝</string>
+    <string name="channel_no_range">仅列出空闲槽位（1–%1$d）；超出设备容量的写入会被设备拒绝</string>
     <string name="channel_no_occupied">该频道号已被占用，请重新选择</string>
     <string name="custom_channel_full">自定义频道已满（上限 %1$d 个）</string>
     <string name="channel_migrate_failed_title">迁移失败</string>
@@ -262,6 +262,15 @@ Required Notice: Copyright © 2026, project maintainer identified by GitHub acco
 <b>许可条款：</b> <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">https://polyformproject.org/licenses/noncommercial/1.0.0</a></p>]]></string>
 
     <!-- 关于页隐藏开关 -->
+    <string name="about_mod_channel">MOD固件频道</string>
+    <string name="mod_channel_warning">仅限固件开发使用：手动指定自定义频道数量后，App 将不再读取固件版本指纹，频道读取、写入与界面全部按该数量处理。官方固件强行修改可能引发未知 BUG。</string>
+    <string name="mod_channel_current_auto">当前：跟随固件自动判定（1.0.5+M1=29 / 官方=20）</string>
+    <string name="mod_channel_current_manual">当前：手动指定 %1$d 槽</string>
+    <string name="mod_channel_set">设置数量</string>
+    <string name="mod_channel_follow">清除，跟随固件</string>
+    <string name="mod_channel_cleared">已清除，跟随固件自动判定</string>
+    <string name="mod_channel_input_hint">频道数量（20–200），留空 = 跟随固件</string>
+    <string name="mod_channel_set_done">已设置：MOD 固件 %1$d 槽（重连对讲机后生效）</string>
     <string name="about_countdown_off">已关闭刷机确认倒计时</string>
     <string name="about_countdown_on">已开启刷机确认倒计时</string>
     <string name="preset_edit_title">编辑预设频道（仅亚音）</string>

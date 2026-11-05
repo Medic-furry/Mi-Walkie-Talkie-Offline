@@ -5,8 +5,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.medicfurry.walkieoffline.BuildConfig
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.medicfurry.walkieoffline.MiWalkieApp
 import com.medicfurry.walkieoffline.R
 import com.medicfurry.walkieoffline.data.PrefsManager
@@ -68,6 +71,10 @@ class AboutActivity : BaseActivity() {
             recreate()
         }
 
+        // MOD固件频道：手动指定频道数量（仅限固件开发使用）。
+        // 设置后 App 不再看固件版本指纹，频道容量直接使用该值；清空 = 跟随固件自动判定。
+        binding.modChannelBtn.setOnClickListener { showModChannelDialog() }
+
         // 隐藏开关：连续 5 次点击版本号（间隔超过 2 秒则重新计数）
         binding.appVersion.setOnClickListener {
             versionTapHandler.removeCallbacks(versionTapReset)
@@ -86,6 +93,55 @@ class AboutActivity : BaseActivity() {
                 ).show()
             }
         }
+    }
+
+    private fun showModChannelDialog() {
+        val prefs = (application as MiWalkieApp).prefs
+        val current = prefs.modChannelSlots
+        val currentText = if (current > 0)
+            getString(R.string.mod_channel_current_manual, current)
+        else getString(R.string.mod_channel_current_auto)
+        // 第一步：警告（仅限固件开发使用）
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.about_mod_channel)
+            .setMessage(getString(R.string.mod_channel_warning) + "\n\n" + currentText)
+            .setPositiveButton(R.string.mod_channel_set) { _, _ -> inputModChannelCount() }
+            .setNeutralButton(R.string.mod_channel_follow) { _, _ ->
+                prefs.modChannelSlots = 0
+                Toast.makeText(this, R.string.mod_channel_cleared, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun inputModChannelCount() {
+        val input = EditText(this)
+        input.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        input.hint = getString(R.string.mod_channel_input_hint)
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            val pad = (20 * resources.displayMetrics.density).toInt()
+            setPadding(pad, pad / 2, pad, 0)
+        }
+        container.addView(input)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.about_mod_channel)
+            .setView(container)
+            .setPositiveButton(R.string.done) { _, _ ->
+                val prefs = (application as MiWalkieApp).prefs
+                val v = input.text.toString().trim()
+                val n = v.toIntOrNull() ?: 0
+                if (n in 20..200) {
+                    prefs.modChannelSlots = n
+                    Toast.makeText(this,
+                        getString(R.string.mod_channel_set_done, n), Toast.LENGTH_LONG).show()
+                } else {
+                    prefs.modChannelSlots = 0
+                    Toast.makeText(this, R.string.mod_channel_cleared, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     override fun onDestroy() {

@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -15,6 +17,8 @@ import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.lifecycle.lifecycleScope
 import com.medicfurry.walkieoffline.R
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.medicfurry.walkieoffline.ble.ConnectorHolder
 import com.medicfurry.walkieoffline.databinding.ActivityChannelEditBinding
 import com.medicfurry.walkieoffline.protocol.CssTones
@@ -65,6 +69,9 @@ class ChannelEditActivity : BaseActivity() {
 
     /** 迁移目标频道完整数据（含新号）：DELETE 成功后补 INSERT 用；失败时保留供重试 */
     private var migrationCh: SealProtos.ChannelInfo? = null
+
+    /** 迁移前置切台的延迟执行体：激活切换的 0x4E28 回显到达后由 observeOpResult 触发 */
+    private var pendingOpAfterSwitch: (() -> Unit)? = null
 
     /** 等待确认的超时兜底：设备未回 ACK 时解除防抖，避免按钮被永久锁定（配合防抖引入） */
     private val opTimeoutRunnable = Runnable {
@@ -133,7 +140,8 @@ class ChannelEditActivity : BaseActivity() {
         // 预设/FRS 频道只读化：频道号 / 收发频率锁死（频率行不挂点击），删除按钮隐藏
         // （删除预设/FRS = 破坏设备固定数组，禁止）；FRS 的名称保持可编辑（isPreset 才锁名称）
         if (isPreset || isFrs) {
-            binding.chNoSpinner.isEnabled = false
+            binding.chNoRow.isEnabled = false
+            binding.chNoRow.alpha = 0.5f
             binding.rxFreqRow.setOnClickListener(null)
             binding.txFreqRow.setOnClickListener(null)
             binding.btnDelete.visibility = View.GONE
@@ -161,41 +169,76 @@ class ChannelEditActivity : BaseActivity() {
      * 从源头杜绝写到占用槽；空闲集合取自 connector 已查询到的自定义频道表。
      */
     private fun setupChannelNoSpinner() {
+        // 提示文本跟随设备容量（指纹判定 29/20 或 About 手动覆盖后的 MAX_CHANNEL_SLOTS）
+        binding.chNoHint.text = getString(R.string.channel_no_range, MAX_CHANNEL_SLOTS)
         if (isPreset || isFrs) {
             // 预设/FRS 频道号 = 设备固定槽位（设备口径 +1 显示），与自定义槽位无关，锁定不可改
             selectedNo = chNo
-            binding.chNoSpinner.adapter = ArrayAdapter(
-                this, android.R.layout.simple_spinner_item,
-                listOf((chNo + 1).toString())
-            )
-            binding.chNoSpinner.setSelection(0)
+            binding.chNoValue.text = (chNo + 1).toString()
+            binding.chNoRow.isEnabled = false
+            binding.chNoRow.alpha = 0.5f
             return
         }
-        val used = ConnectorHolder.connector?.customChannels?.value?.map { it.no }?.toSet() ?: emptySet()
-        // 槽位选择放开到协议硬顶（0 基 no ≤199）：空槽不会出现在设备列表里，容量只有设备知道——
-        // 写入超出设备容量时设备回 result=ERROR 拒绝（App 提示失败），写入成功即该槽可用；
-        // 绝不按读回结果预设容量上限（50/100 条固件无需改 App）
-        val free = (0 until SLOT_PICK_BOUND).filter { it !in used }
-        val entries = if (isAdd) free else (free + chNo).distinct().sorted()
-        selectedNo = when {
-            isAdd && chNo in free -> chNo          // 列表页建议号仍空闲则沿用
-            isAdd -> entries.firstOrNull() ?: chNo // 否则取第一个空闲槽
-            else -> chNo                           // 编辑默认当前号
-        }
-        binding.chNoSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_item,
-            // 显示用设备口径（1 起）；entries 仍是内部 0 基 no，selectedNo 取 entries[position]
-            entries.map { (it + 1).toString() }
-        ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
-        val idx = entries.indexOf(selectedNo)
-        if (idx >= 0) binding.chNoSpinner.setSelection(idx)
-        binding.chNoSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedNo = entries[position]
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        // 自定义频道：初始号 = 列表页建议号（新增）或当前号（编辑），宫格里可改选
+        selectedNo = chNo
+        refreshChannelNoDisplay()
+        binding.chNoRow.setOnClickListener { showChannelNoGridDialog() }
     }
+
+    /** 刷新频道号显示（设备口径 +1） */
+    private fun refreshChannelNoDisplay() {
+        binding.chNoValue.text = (selectedNo + 1).toString()
+    }
+
+    /**
+     * 频道号宫格弹窗：与预设频道同款 5 列宫格（item_preset），1..容量逐格显示。
+     * 占用槽灰显 35% 不可点（设备对已占用槽的写入是静默覆盖，从源头杜绝），
+     * 空闲槽可点，点击即选定并关闭。当前号高亮（预设选中态同款青绿底）。
+     */
+    private fun showChannelNoGridDialog() {
+        val used = ConnectorHolder.connector?.customChannels?.value
+            ?.filter { it.no != chNo || isAdd }   // 编辑时当前号不算占用
+            ?.associateBy { it.no } ?: emptyMap()
+        var dialog: androidx.appcompat.app.AlertDialog? = null
+        val recycler = RecyclerView(this).apply {
+            layoutManager = GridLayoutManager(this@ChannelEditActivity, 5)
+            adapter = object : RecyclerView.Adapter<GridCellVH>() {
+                override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridCellVH =
+                    GridCellVH(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_preset, parent, false) as TextView)
+
+                override fun getItemCount() = MAX_CHANNEL_SLOTS
+
+                override fun onBindViewHolder(holder: GridCellVH, position: Int) {
+                    val no = position
+                    val ch = used[no]
+                    val occupied = ch != null && ch.isValid
+                    holder.tv.text = (no + 1).toString()
+                    holder.tv.isSelected = !occupied && no == selectedNo
+                    if (occupied) {
+                        // 占用槽：灰显 35%，不可点（设备对已占用槽写入是静默覆盖）
+                        holder.tv.alpha = 0.35f
+                        holder.tv.setOnClickListener(null)
+                    } else {
+                        holder.tv.alpha = 1f
+                        holder.tv.setOnClickListener {
+                            selectedNo = no
+                            refreshChannelNoDisplay()
+                            dialog?.dismiss()
+                        }
+                    }
+                }
+            }
+        }
+        dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.channel_number_label)
+            .setView(recycler)
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    /** 宫格单元 ViewHolder（item_preset 同款格子） */
+    private inner class GridCellVH(val tv: TextView) : RecyclerView.ViewHolder(tv)
 
     /** 目标槽此刻是否空闲（Spinner 已保证，这里做提交前的防御性复查） */
     private fun isSlotFree(no: Int): Boolean =
@@ -319,25 +362,22 @@ class ChannelEditActivity : BaseActivity() {
                 }
             }
             ch.no != chNo -> {
-                // 改号 = 迁移：先删旧号（Spinner 已保证新号空闲，这里防御性复查）
+                // 改号 = 迁移：先删旧号（宫格已保证新号空闲，这里防御性复查）
                 if (!isSlotFree(ch.no)) {
                     Toast.makeText(this, getString(R.string.channel_no_occupied), Toast.LENGTH_SHORT).show()
                     return
                 }
-                migrationActive = true
-                migrationCh = ch
-                pendingOp = SealProtos.ChOption.DELETE
-                val delCh = SealProtos.ChannelInfo().also {
-                    it.no = chNo
-                    it.type = chType
-                }
-                if (!connector.deleteChannel(delCh)) {
-                    migrationActive = false
-                    pendingOp = -1
-                    Toast.makeText(this, getString(R.string.channel_op_failed), Toast.LENGTH_SHORT).show()
-                } else {
+                // 设备禁止删除"当前激活中"的频道（DELETE → result=3 FORBIDE，真机实测）：
+                // 待删频道是激活频道时，先切到替身频道，等 0x4E28 回显后再执行迁移删除
+                if (isCurrentlyActive(chNo, chType)) {
+                    val substitute = pickSubstituteChannel(chNo)
+                    connector.sendChannelActivate(substitute, isMajor = true)
+                    pendingOp = SealProtos.ChOption.DELETE
+                    pendingOpAfterSwitch = { performMigrationDelete(ch) }
                     armOpTimeout()
+                    return
                 }
+                performMigrationDelete(ch)
             }
             else -> {
                 pendingOp = SealProtos.ChOption.MODIFY
@@ -350,6 +390,40 @@ class ChannelEditActivity : BaseActivity() {
             }
         }
     }
+
+    /** 迁移步骤一：DELETE 旧号（激活频道预切走完成后的实际执行） */
+    private fun performMigrationDelete(ch: SealProtos.ChannelInfo) {
+        val connector = ConnectorHolder.connector ?: return
+        migrationActive = true
+        migrationCh = ch
+        pendingOp = SealProtos.ChOption.DELETE
+        val delCh = SealProtos.ChannelInfo().also {
+            it.no = chNo
+            it.type = chType
+        }
+        if (!connector.deleteChannel(delCh)) {
+            migrationActive = false
+            pendingOp = -1
+            Toast.makeText(this, getString(R.string.channel_op_failed), Toast.LENGTH_SHORT).show()
+        } else {
+            armOpTimeout()
+        }
+    }
+
+    /** 该频道是否为当前激活频道（ch1/ch2 按 type+no 匹配，与设备端 SealSharkChannel.equals 同口径） */
+    private fun isCurrentlyActive(no: Int, type: Int): Boolean =
+        ConnectorHolder.connector?.channels?.value
+            ?.any { it.type == type && it.no == no } == true
+
+    /** 迁移/删除激活频道时的替身：列表里第一條其他自定义频道，否则公众频道 1 */
+    private fun pickSubstituteChannel(excludeNo: Int): SealProtos.ChannelInfo =
+        ConnectorHolder.connector?.customChannels?.value
+            ?.firstOrNull { it.no != excludeNo && it.type == chType }
+            ?: SealProtos.ChannelInfo().also {
+                it.no = 0
+                it.type = SealProtos.ChType.PUBLIC
+                it.name = getString(R.string.preset_channel_name, 1)
+            }
 
     /** 迁移失败对话框：DELETE 已成功、INSERT 失败，原频道数据保留在 migrationCh，可只补 INSERT 重试 */
     private fun showMigrateFailDialog() {
@@ -390,12 +464,26 @@ class ChannelEditActivity : BaseActivity() {
             .setMessage(getString(R.string.delete_channel_confirm))
             .setPositiveButton(R.string.delete) { _, _ ->
                 val connector = ConnectorHolder.connector ?: return@setPositiveButton
-                pendingOp = SealProtos.ChOption.DELETE
-                if (!connector.deleteChannel(buildChannel())) {
-                    pendingOp = -1
-                    Toast.makeText(this, getString(R.string.channel_op_failed), Toast.LENGTH_SHORT).show()
+                // 激活频道需先切走（设备禁止删除激活中的频道：DELETE → result=3 FORBIDE）
+                if (isCurrentlyActive(chNo, chType)) {
+                    connector.sendChannelActivate(pickSubstituteChannel(chNo), isMajor = true)
+                    binding.root.postDelayed({
+                        pendingOp = SealProtos.ChOption.DELETE
+                        if (!connector.deleteChannel(buildChannel())) {
+                            pendingOp = -1
+                            Toast.makeText(this, getString(R.string.channel_op_failed), Toast.LENGTH_SHORT).show()
+                        } else {
+                            armOpTimeout()
+                        }
+                    }, 800)
                 } else {
-                    armOpTimeout()
+                    pendingOp = SealProtos.ChOption.DELETE
+                    if (!connector.deleteChannel(buildChannel())) {
+                        pendingOp = -1
+                        Toast.makeText(this, getString(R.string.channel_op_failed), Toast.LENGTH_SHORT).show()
+                    } else {
+                        armOpTimeout()
+                    }
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
@@ -405,6 +493,16 @@ class ChannelEditActivity : BaseActivity() {
     /** 等设备的 ChannelInfoOperate 响应（0x4E2B 带 result），CH_OK=0 成功。
      *  迁移流程（改号）占两步：DELETE 确认成功 → 自动补 INSERT；INSERT 失败 → 迁移失败对话框（可只补 INSERT 重试） */
     private fun observeOpResult() {
+        lifecycleScope.launch {
+            // 迁移前置切台的 0x4E28 回显：到达即执行挂起的迁移 DELETE
+            ConnectorHolder.connector?.channels?.collect { list ->
+                val pending = pendingOpAfterSwitch ?: return@collect
+                // 切台已生效（激活槽回显更新）→ 清除挂起并执行
+                pendingOpAfterSwitch = null
+                pendingOp = -1
+                binding.root.postDelayed({ pending?.invoke() }, 600)
+            }
+        }
         lifecycleScope.launch {
             ConnectorHolder.connector?.channelOpResult?.collect { op ->
                 if (op == null || pendingOp < 0) return@collect
@@ -463,6 +561,10 @@ class ChannelEditActivity : BaseActivity() {
             }
             SealProtos.ChOption.INSERT -> {
                 if (success) {
+                    // 迁移完成：把重编号后的频道切为激活（改号的就是用户在用的频道）
+                    migrationCh?.let {
+                        ConnectorHolder.connector?.sendChannelActivate(it, isMajor = true)
+                    }
                     migrationActive = false
                     pendingOp = -1
                     Toast.makeText(this, getString(R.string.channel_op_success), Toast.LENGTH_SHORT).show()
@@ -493,18 +595,11 @@ class ChannelEditActivity : BaseActivity() {
             private set
 
         /**
-         * 新增/编辑频道的槽位选择硬顶（0 基 no ≤199，即最多 200 条）。
-         * 设备容量不读协议可知（空槽与越界同应答），故选择器全量放开、设备当裁判：
-         * 写入 no≥设备容量时设备回 ERROR 拒绝；写入成功 = 该槽在设备容量内。
+         * 设备容量判定后同步槽位上限（1.0.5+M1=29 / 官方=20），由 ChannelSettingActivity
+         * 在 BleConnector 指纹判定后调用；新增/编辑/整理视图全部按此容量展开。
          */
-        const val SLOT_PICK_BOUND = 200
-
-        /** 设备实读后扩展槽位上限（仅扩不缩；下限 29）。由 ChannelSettingActivity 在列表同步后调用 */
-        fun expandMaxChannelSlots(observedMaxNo: Int) {
-            val want = observedMaxNo + 1
-            if (want > MAX_CHANNEL_SLOTS) {
-                MAX_CHANNEL_SLOTS = want
-            }
+        fun setCapacitySlots(cap: Int) {
+            if (cap in 20..200) MAX_CHANNEL_SLOTS = cap
         }
 
         private const val EXTRA_IS_ADD = "is_add"

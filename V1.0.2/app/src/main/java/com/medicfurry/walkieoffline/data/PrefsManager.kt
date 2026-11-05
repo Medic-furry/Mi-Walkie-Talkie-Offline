@@ -19,6 +19,7 @@ class PrefsManager(context: Context) {
         private const val KEY_LANGUAGE = "language"
         private const val KEY_LAST_VER_HW = "last_ver_hw"
         private const val KEY_BYPASS_FLASH_COUNTDOWN = "bypass_flash_countdown"
+        private const val KEY_MOD_CHANNEL_SLOTS = "mod_channel_slots"
         const val LANG_ZH = "zh"
         const val LANG_EN = "en"
     }
@@ -39,6 +40,12 @@ class PrefsManager(context: Context) {
     var lastVerHw: Int
         get() = prefs.getInt(KEY_LAST_VER_HW, -1)
         set(value) = prefs.edit().putInt(KEY_LAST_VER_HW, value).apply()
+
+    /** MOD 固件频道手动覆盖：>0 = 用户在「关于」页手动指定的频道数量（不看固件版本）；
+     *  0 = 跟随固件指纹自动判定。入口在「关于」页——仅限固件开发使用。 */
+    var modChannelSlots: Int
+        get() = prefs.getInt(KEY_MOD_CHANNEL_SLOTS, 0)
+        set(value) = prefs.edit().putInt(KEY_MOD_CHANNEL_SLOTS, value).apply()
 
     /** 隐藏开关：刷机确认弹窗的 10 秒倒计时是否已关闭。
      *  入口在「关于」页——连续点击版本号 5 次切换。关闭后点「刷写」时

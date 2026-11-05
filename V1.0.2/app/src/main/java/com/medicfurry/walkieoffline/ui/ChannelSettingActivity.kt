@@ -1278,8 +1278,8 @@ class ChannelSettingActivity : BaseActivity() {
                 customList.clear()
                 customList.addAll(list)
                 // 槽位上限随设备实读动态扩展（50/100 条固件无需改 App；下限 29 = 1.0.5+M1 上限）
-                ChannelEditActivity.expandMaxChannelSlots(
-                    list.maxOfOrNull { it.no } ?: -1)
+                ChannelEditActivity.setCapacitySlots(
+                    (list.maxOfOrNull { it.no } ?: -1) + 1)
                 // 排序执行中不重排列表：0x4E2B 回显会带来中间态，
                 // 保持用户拖拽后的排列直到进度框结束（finish/abort 时统一同步）
                 if (showCustom && !reorderActive) refreshList()
@@ -1379,7 +1379,7 @@ class ChannelSettingActivity : BaseActivity() {
     private fun nextFreeChannelNo(): Int {
         val used = customList.map { it.no }.toSet()
         var n = 0
-        while (n < ChannelEditActivity.SLOT_PICK_BOUND && n in used) n++
+        while (n < ChannelEditActivity.MAX_CHANNEL_SLOTS && n in used) n++
         return n
     }
 

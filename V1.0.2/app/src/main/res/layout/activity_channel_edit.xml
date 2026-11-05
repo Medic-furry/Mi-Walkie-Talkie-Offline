@@ -85,11 +85,13 @@
             android:textColor="#333333"
             android:textSize="16sp" />
 
-        <Spinner
-            android:id="@+id/chNoSpinner"
+        <TextView
+            android:id="@+id/chNoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
